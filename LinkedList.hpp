@@ -52,6 +52,7 @@ public:
             (this->size)++;
         }
     }
+
     void Append(T item)
     {
         if (this->size < 0) {
@@ -182,6 +183,64 @@ public:
             newList->Prepend(list->Get(i));
         }
         return newList;
+    }
+    void reverse( Node<T>* current, Node<T>* cur_next)
+    {
+        if(cur_next->pNext != nullptr)
+        {
+            reverse(cur_next,cur_next->pNext);
+        }
+        cur_next->pNext = current;
+    }
+    void Reverse()
+    {
+        if(this->size == 1)
+            return;
+        Node<T>* new_head = this->head;
+        for(int i = 0; i < this->GetLength();i++)
+        {
+            if(new_head->pNext != nullptr)
+                new_head = new_head->pNext;
+        }
+        Node<T>* current;
+        Node<T>* cur_next;
+        current = this->head;
+        cur_next = this->head->pNext;
+        this->head->pNext = nullptr;
+        reverse(current, cur_next);
+        this->head = new_head;
+    }
+    void Delete(bool(*comp)(const T& temp))
+    {
+        while(this->size != 1)
+        {
+            if(comp(this->head->data))
+            {
+                this->head = this->head->pNext;
+                this->size--;
+                continue;
+            }
+            Node<T>* tek = this->head;
+            Node<T>* pred = this->head;
+            while(!comp(tek->data) && tek->pNext != nullptr)
+            {
+                pred = tek;
+                tek = tek->pNext;
+            }
+            if(tek->pNext == nullptr && comp(tek->data))
+            {
+                pred->pNext = tek->pNext;
+                this->size--;
+                return;
+            }
+            if(tek->pNext == nullptr && !comp(tek->data))
+            {
+                return;
+            }
+            pred->pNext = tek->pNext;
+            delete tek;
+            this->size--;
+        }
     }
 
 };
